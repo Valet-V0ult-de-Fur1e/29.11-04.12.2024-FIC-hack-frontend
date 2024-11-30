@@ -1,26 +1,12 @@
-/*!
-
-=========================================================
-* Argon Dashboard React - v1.2.4
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2024 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-
-// reactstrap components
+import axios from "axios";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { UserAgent } from 'react-useragent';
+import { UAParser } from 'ua-parser-js';
 import {
   Button,
   Card,
-  CardHeader,
+  // CardHeader,
   CardBody,
   FormGroup,
   Form,
@@ -33,55 +19,39 @@ import {
 } from "reactstrap";
 
 const Login = () => {
+  const [userLogin, setUserLogin] = useState('');
+  const [userPassword, setUserPassword] = useState('');
+  const [requestInProcess, setRequestInProcess] = useState(false);
+  const navigate = useNavigate();
+
+  const tryLogIn = async () => {
+    console.log(userLogin, userPassword);
+    setRequestInProcess(true);
+    try {
+      const response = await axios.get("/", {
+        headers: {
+          "Access-Control-Allow-Origin": "*"
+        }
+      })
+      console.log(UAParser(UserAgent))
+      if (response.status !== 200) {
+        throw new Error(`Error! status: ${response.status}`);
+      }
+      navigate("/admin/*")
+    }
+    catch (err) {
+      console.log(err.message);
+    }
+    finally {
+      setRequestInProcess(false);
+    }
+  }
+
   return (
     <>
       <Col lg="5" md="7">
         <Card className="bg-secondary shadow border-0">
-          <CardHeader className="bg-transparent pb-5">
-            <div className="text-muted text-center mt-2 mb-3">
-              <small>Sign in with</small>
-            </div>
-            <div className="btn-wrapper text-center">
-              <Button
-                className="btn-neutral btn-icon"
-                color="default"
-                href="#pablo"
-                onClick={(e) => e.preventDefault()}
-              >
-                <span className="btn-inner--icon">
-                  <img
-                    alt="..."
-                    src={
-                      require("../../assets/img/icons/common/github.svg")
-                        .default
-                    }
-                  />
-                </span>
-                <span className="btn-inner--text">Github</span>
-              </Button>
-              <Button
-                className="btn-neutral btn-icon"
-                color="default"
-                href="#pablo"
-                onClick={(e) => e.preventDefault()}
-              >
-                <span className="btn-inner--icon">
-                  <img
-                    alt="..."
-                    src={
-                      require("../../assets/img/icons/common/google.svg")
-                        .default
-                    }
-                  />
-                </span>
-                <span className="btn-inner--text">Google</span>
-              </Button>
-            </div>
-          </CardHeader>
           <CardBody className="px-lg-5 py-lg-5">
-            <div className="text-center text-muted mb-4">
-              <small>Or sign in with credentials</small>
-            </div>
             <Form role="form">
               <FormGroup className="mb-3">
                 <InputGroup className="input-group-alternative">
@@ -94,6 +64,7 @@ const Login = () => {
                     placeholder="Email"
                     type="email"
                     autoComplete="new-email"
+                    onChange={e => setUserLogin(e.target.value)}
                   />
                 </InputGroup>
               </FormGroup>
@@ -108,6 +79,7 @@ const Login = () => {
                     placeholder="Password"
                     type="password"
                     autoComplete="new-password"
+                    onChange={e => setUserPassword(e.target.value)}
                   />
                 </InputGroup>
               </FormGroup>
@@ -125,7 +97,7 @@ const Login = () => {
                 </label>
               </div>
               <div className="text-center">
-                <Button className="my-4" color="primary" type="button">
+                <Button className="my-4" color="primary" type="button" disabled={requestInProcess} onClick={e => { !requestInProcess && tryLogIn() }}>
                   Sign in
                 </Button>
               </div>
@@ -146,7 +118,7 @@ const Login = () => {
             <a
               className="text-light"
               href="#pablo"
-              onClick={(e) => e.preventDefault()}
+              onClick={(e) => navigate("/auth/register")}
             >
               <small>Create new account</small>
             </a>
