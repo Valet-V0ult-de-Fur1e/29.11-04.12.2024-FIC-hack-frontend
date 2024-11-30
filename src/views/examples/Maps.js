@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 // reactstrap components
 import { Card, Container, Row } from "reactstrap";
@@ -11,18 +11,46 @@ import Header from "components/Headers/Header.js";
 const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   const sendMessage = () => {
-    setMessages([...messages, inputValue]);
+    setMessages([...messages, { text: inputValue, fromMe: true }]);
     setInputValue('');
   };
 
+  const receiveMessage = () => {
+    setMessages([...messages, { text: 'Hello from the other side!', fromMe: false }]);
+  };
+
   return (
-    <div style={{ maxWidth: '400px', margin: '0 auto', padding: '20px', border: '1px solid #ccc', borderRadius: '5px' }}>
-      <div style={{ height: '300px', overflowY: 'scroll', marginBottom: '10px'}}>
+    <div style={{ padding: '20px', border: '1px solid #ccc', borderRadius: '5px' }}>
+      <div style={{ height: '300px', overflowY: 'scroll', marginBottom: '10px' }}>
         {messages.map((message, index) => (
-          <div key={index} style={{ backgroundColor: '#f9f9f9', padding: '5px', margin: '5px', borderRadius: '5px' }}>{message}</div>
+          <div key={index} style={{ textAlign: message.fromMe ? 'right' : 'left', marginBottom: '10px' }}>
+            <div style={{
+              backgroundColor: message.fromMe ? '#007bff' : '#f9f9f9',
+              color: message.fromMe ? '#fff' : '#000',
+              padding: '5px',
+              margin: '5px',
+              borderRadius: '5px',
+              display: 'inline-block'
+            }}>
+              {message.text}
+            </div>
+          </div>
         ))}
+        <div ref={messagesEndRef} />
+      </div>
+      <div style={{ marginBottom: '10px' }}>
+        <button onClick={receiveMessage} style={{ padding: '5px 10px', backgroundColor: '#6c757d', color: '#fff', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>Receive Message</button>
       </div>
       <input
         type="text"
@@ -44,7 +72,7 @@ const Maps = () => {
         <Row>
           <div className="col">
             <Card className="shadow border-0">
-              <Chat/>
+              <Chat />
             </Card>
           </div>
         </Row>
