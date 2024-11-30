@@ -1,21 +1,8 @@
-/*!
-
-=========================================================
-* Argon Dashboard React - v1.2.4
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2024 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { UserAgent } from 'react-useragent';
+import { UAParser } from 'ua-parser-js';
 // reactstrap components
 import {
   DropdownMenu,
@@ -35,26 +22,27 @@ import {
 } from "reactstrap";
 
 const AdminNavbar = (props) => {
+  const navigator = useNavigate();
   return (
     <>
       <Navbar className="navbar-top navbar-dark" expand="md" id="navbar-main">
         <Container fluid>
-          <Link
+          {/* <Link
             className="h4 mb-0 text-white text-uppercase d-none d-lg-inline-block"
             to="/"
           >
             {props.brandText}
-          </Link>
+          </Link> */}
           <Form className="navbar-search navbar-search-dark form-inline mr-3 d-none d-md-flex ml-lg-auto">
             <FormGroup className="mb-0">
-              <InputGroup className="input-group-alternative">
+              {/* <InputGroup className="input-group-alternative">
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>
                     <i className="fas fa-search" />
                   </InputGroupText>
                 </InputGroupAddon>
                 <Input placeholder="Search" type="text" />
-              </InputGroup>
+              </InputGroup> */}
             </FormGroup>
           </Form>
           <Nav className="align-items-center d-none d-md-flex" navbar>
@@ -82,20 +70,15 @@ const AdminNavbar = (props) => {
                   <i className="ni ni-single-02" />
                   <span>My profile</span>
                 </DropdownItem>
-                <DropdownItem to="/admin/user-profile" tag={Link}>
-                  <i className="ni ni-settings-gear-65" />
-                  <span>Settings</span>
-                </DropdownItem>
-                <DropdownItem to="/admin/user-profile" tag={Link}>
-                  <i className="ni ni-calendar-grid-58" />
-                  <span>Activity</span>
-                </DropdownItem>
-                <DropdownItem to="/admin/user-profile" tag={Link}>
-                  <i className="ni ni-support-16" />
-                  <span>Support</span>
-                </DropdownItem>
-                <DropdownItem divider />
-                <DropdownItem href="#pablo" onClick={(e) => e.preventDefault()}>
+                <DropdownItem href="#pablo" onClick={(e) => {
+                  axios.post("https://scribesbookapi-evhk1f08.b4a.run/users/logout", {
+                    "token": localStorage.getItem("jwt"),
+                    "host_name": UAParser(UserAgent).browser.name + " " + UAParser(UserAgent).os.name
+                  }
+                  )
+                  localStorage.setItem("jwt", "")
+                  navigator("/auth/login")
+                }}>
                   <i className="ni ni-user-run" />
                   <span>Logout</span>
                 </DropdownItem>
