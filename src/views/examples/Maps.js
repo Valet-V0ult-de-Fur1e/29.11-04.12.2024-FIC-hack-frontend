@@ -42,6 +42,7 @@ const Chat = () => {
               margin: '5px',
               borderRadius: '5px',
               display: 'inline-block'
+              
             }}>
               {message.text}
             </div>
