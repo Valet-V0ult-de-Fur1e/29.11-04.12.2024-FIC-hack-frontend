@@ -19,25 +19,33 @@ import {
 } from "reactstrap";
 
 const Login = () => {
-  const [userLogin, setUserLogin] = useState('');
-  const [userPassword, setUserPassword] = useState('');
+  const [identifier, setidentifier] = useState('');
+  const [password, setPassword] = useState('');
   const [requestInProcess, setRequestInProcess] = useState(false);
   const navigate = useNavigate();
+  const hostName = UAParser(UserAgent).browser.name + " " + UAParser(UserAgent).os.name;
 
-  const tryLogIn = async () => {
-    console.log(userLogin, userPassword);
+  const LogIn = async () => {
     setRequestInProcess(true);
     try {
-      const response = await axios.get("/", {
-        headers: {
-          "Access-Control-Allow-Origin": "*"
+      const response = await axios.post("https://scribesbookapi-evhk1f08.b4a.run/users/login",
+        {
+          "identifier": identifier,
+          "password": password,
+          "host_name": hostName
         }
-      })
-      console.log(UAParser(UserAgent))
+      )
+      console.log(response)
       if (response.status !== 200) {
         throw new Error(`Error! status: ${response.status}`);
       }
-      navigate("/admin/*")
+      else {
+        localStorage.setItem("jwt", response.data.access_token)
+        console.log(response.data)
+        console.log(localStorage.getItem("jwt"))
+        navigate("/admin/*")
+      }
+
     }
     catch (err) {
       console.log(err.message);
@@ -54,18 +62,13 @@ const Login = () => {
           <CardBody className="px-lg-5 py-lg-5">
             <Form role="form">
               <FormGroup className="mb-3">
-                <InputGroup className="input-group-alternative">
+                <InputGroup className="input-group-alternative mb-3">
                   <InputGroupAddon addonType="prepend">
                     <InputGroupText>
-                      <i className="ni ni-email-83" />
+                      <i className="ni ni-hat-3" />
                     </InputGroupText>
                   </InputGroupAddon>
-                  <Input
-                    placeholder="Email"
-                    type="email"
-                    autoComplete="new-email"
-                    onChange={e => setUserLogin(e.target.value)}
-                  />
+                  <Input placeholder="Login or email" type="text" onChange={e => setidentifier(e.target.value)} />
                 </InputGroup>
               </FormGroup>
               <FormGroup>
@@ -79,7 +82,7 @@ const Login = () => {
                     placeholder="Password"
                     type="password"
                     autoComplete="new-password"
-                    onChange={e => setUserPassword(e.target.value)}
+                    onChange={e => setPassword(e.target.value)}
                   />
                 </InputGroup>
               </FormGroup>
@@ -97,7 +100,7 @@ const Login = () => {
                 </label>
               </div>
               <div className="text-center">
-                <Button className="my-4" color="primary" type="button" disabled={requestInProcess} onClick={e => { !requestInProcess && tryLogIn() }}>
+                <Button className="my-4" color="primary" type="button" disabled={requestInProcess} onClick={e => { !requestInProcess && LogIn() }}>
                   Sign in
                 </Button>
               </div>

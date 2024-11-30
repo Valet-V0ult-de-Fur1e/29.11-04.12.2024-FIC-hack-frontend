@@ -7,7 +7,6 @@
     "type": "git",
     "url": "git+https://github.com/creativetimofficial/argon-dashboard-react.git"
   },
-  "proxy": "https://scribesbook-ihul0pyh.b4a.run",
   "keywords": [
     "react",
     "reactjs",

@@ -1,22 +1,3 @@
-/*!
-
-=========================================================
-* Argon Dashboard React - v1.2.4
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2024 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-
-// reactstrap components
 import {
   Button,
   Card,
@@ -31,8 +12,55 @@ import {
   Row,
   Col,
 } from "reactstrap";
+import axios from "axios";
+import { UserAgent } from 'react-useragent';
+import { UAParser } from 'ua-parser-js';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
+  const [login, setLogin] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [mail, setMail] = useState('');
+  const [password, setPassword] = useState('');
+  const hostName = UAParser(UserAgent).browser.name + " " + UAParser(UserAgent).os.name;
+  const [isReady, setIsReady] = useState(false);
+  const [requestInProcess, setRequestInProcess] = useState(false);
+  const navigate = useNavigate();
+
+  const SingIn = async () => {
+    setRequestInProcess(true);
+    try {
+      const response = await axios.post("https://scribesbookapi-evhk1f08.b4a.run/users/sign_in",
+        {
+          "login": login,
+          "mail": mail,
+          "name_first": firstName,
+          "name_last": lastName,
+          "password": password,
+          "host_name": hostName
+        })
+      console.log(response)
+      if (response.status !== 200) {
+        throw new Error(`Error! status: ${response.status}`);
+      }
+      else {
+        localStorage.setItem("jwt", response.data.access_token)
+        console.log(response.data)
+        console.log(localStorage.getItem("jwt"))
+        navigate("/admin/*")
+      }
+      
+    }
+    catch (err) {
+      console.log(err.message);
+    }
+    finally {
+      setRequestInProcess(false);
+    }
+  }
+
   return (
     <>
       <Col lg="6" md="8">
@@ -46,7 +74,17 @@ const Register = () => {
                       <i className="ni ni-hat-3" />
                     </InputGroupText>
                   </InputGroupAddon>
-                  <Input placeholder="Name" type="text" />
+                  <Input placeholder="Login" type="text" onChange={e => setLogin(e.target.value)} />
+                </InputGroup>
+              </FormGroup>
+              <FormGroup>
+                <InputGroup className="input-group-alternative mb-3">
+                  <Input placeholder="Имя" type="text" onChange={e => setFirstName(e.target.value)} />
+                </InputGroup>
+              </FormGroup>
+              <FormGroup>
+                <InputGroup className="input-group-alternative mb-3">
+                  <Input placeholder="Фамилия" type="text" onChange={e => setLastName(e.target.value)} />
                 </InputGroup>
               </FormGroup>
               <FormGroup>
@@ -60,6 +98,7 @@ const Register = () => {
                     placeholder="Email"
                     type="email"
                     autoComplete="new-email"
+                    onChange={e => setMail(e.target.value)}
                   />
                 </InputGroup>
               </FormGroup>
@@ -74,6 +113,7 @@ const Register = () => {
                     placeholder="Password"
                     type="password"
                     autoComplete="new-password"
+                    onChange={e => setPassword(e.target.value)}
                   />
                 </InputGroup>
               </FormGroup>
@@ -90,6 +130,7 @@ const Register = () => {
                       className="custom-control-input"
                       id="customCheckRegister"
                       type="checkbox"
+                      onClick={e => setIsReady(!isReady)}
                     />
                     <label
                       className="custom-control-label"
@@ -106,7 +147,7 @@ const Register = () => {
                 </Col>
               </Row>
               <div className="text-center">
-                <Button className="mt-4" color="primary" type="button">
+                <Button className="mt-4" color="primary" type="button" disabled={!isReady && !requestInProcess} onClick={e => { SingIn() }}>
                   Create account
                 </Button>
               </div>
