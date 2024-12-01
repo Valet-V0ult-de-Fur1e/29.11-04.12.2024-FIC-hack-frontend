@@ -47,7 +47,6 @@ const Table1 = () => {
 	return (
 		<div>
 			<h1>Editable Table</h1>
-			<button onClick={handleAddRow}>Add New Row</button>
 			<table>
 				<thead>
 					<tr>
@@ -77,6 +76,7 @@ const Table1 = () => {
 					onChange={handleFilterChange}
 				/>
 			</div>
+			<button onClick={handleAddRow}>Add New Row</button>
 			{/* Модальное окно для редактирования */}
 			<Modal
 				isOpen={isModalOpen}
