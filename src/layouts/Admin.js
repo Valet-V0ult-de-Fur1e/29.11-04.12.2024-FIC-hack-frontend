@@ -6,8 +6,10 @@ import { Container } from "reactstrap";
 import AdminNavbar from "components/Navbars/AdminNavbar.js";
 import AdminFooter from "components/Footers/AdminFooter.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
-
+import { UserAgent } from 'react-useragent';
+import { UAParser } from 'ua-parser-js';
 import routes from "navRoutes";
+import axios from "axios";
 
 const Admin = (props) => {
   const mainContent = React.useRef(null);
@@ -18,6 +20,25 @@ const Admin = (props) => {
     document.scrollingElement.scrollTop = 0;
     mainContent.current.scrollTop = 0;
   }, [location]);
+
+  React.useEffect(() => {
+    if (localStorage.getItem("jwt") !== "") {
+      console.log({
+        "token": localStorage.getItem("jwt"),
+        "host_name": UAParser(UserAgent).browser.name + " " + UAParser(UserAgent).os.name
+      })
+      axios.post(
+        "https://scribesbookapi-evhk1f08.b4a.run/users/profile",
+        {
+          "token": localStorage.getItem("jwt"),
+          "host_name": UAParser(UserAgent).browser.name + " " + UAParser(UserAgent).os.name
+        }
+      ).then(
+        res => console.log(res)
+      )
+    }
+
+  })
 
   const getRoutes = (routes) => {
     return routes.map((prop, key) => {
