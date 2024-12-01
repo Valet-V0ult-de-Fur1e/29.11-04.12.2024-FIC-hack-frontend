@@ -1,8 +1,8 @@
 import { useState } from "react";
 import './tables.css'
-import Modal from "./modal";
+import Modal2 from "./modal";
 // Основной компонент таблицы
-const Table1 = () => {
+const Table2 = () => {
 	const [rows, setRows] = useState([
 		{ id: 1, name: 'Alice', age: 25 },
 		{ id: 2, name: 'Bob', age: 30 },
@@ -50,26 +50,16 @@ const Table1 = () => {
 			<table>
 				<thead>
 					<tr>
-						<th>category</th>
-						<th>amount</th>
+						<th>Name</th>
+						<th>Age</th>
 						<th>Actions</th>
-						<th>date</th>
-						<th>type</th>
-						<th>target_id</th>
-						<th>credit_id</th>
-						<th>actions</th>
 					</tr>
 				</thead>
 				<tbody>
 					{filteredRows.map((row) => (
-						<tr key={row.id} >
-								<td>{row.name}</td>
-								<td>{row.age}</td>
-								<td>{row.name}</td>
-								<td>{row.age}</td>
-								<td>{row.name}</td>
-								<td>{row.age}</td>
-								<td>{row.name}</td>
+						<tr key={row.id}>
+							<td>{row.name}</td>
+							<td>{row.age}</td>
 							<td>
 								<button onClick={() => handleEdit(row)}>Edit</button>
 								<button onClick={() => handleDelete(row.id)}>Delete</button>
@@ -88,7 +78,7 @@ const Table1 = () => {
 			</div>
 			<button onClick={handleAddRow}>Add New Row</button>
 			{/* Модальное окно для редактирования */}
-			<Modal
+			<Modal2
 				isOpen={isModalOpen}
 				onClose={() => setIsModalOpen(false)}
 				onSave={handleSaveRow}
@@ -98,4 +88,4 @@ const Table1 = () => {
 	);
 };
 
-export default Table1;
+export default Table2;

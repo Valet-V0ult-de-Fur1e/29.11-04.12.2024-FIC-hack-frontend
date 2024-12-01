@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import './tables.css'
 
 // // Компонент для отображения модального окна
-const Modal = ({ isOpen, onClose, onSave, rowData }) => {
+const Modal2 = ({ isOpen, onClose, onSave, rowData }) => {
     const getData = ()=> {
         console.log(rowData)
         if (rowData === null) return {
             id: Date.now(),
-            category: '',
+            name: '',
             age: '',
         }
         return rowData
@@ -16,8 +16,8 @@ const Modal = ({ isOpen, onClose, onSave, rowData }) => {
     console.log(data)
 
 	const handleChange = (e) => {
-		const { category, value } = e.target;
-		setData((prevData) => ({ ...prevData, [category]: value }));
+		const { name, value } = e.target;
+		setData((prevData) => ({ ...prevData, [name]: value }));
 	};
 
 	const handleSave = () => {
@@ -40,11 +40,11 @@ const Modal = ({ isOpen, onClose, onSave, rowData }) => {
 				<div className="modal-content">
 					<h2>Edit Row</h2>
 					<label>
-					category:
+						Name:
 						<input
 							type="text"
 							name="name"
-							value={data.category}
+							value={data.name}
 							onChange={handleChange}
 						/>
 					</label>
@@ -65,4 +65,4 @@ const Modal = ({ isOpen, onClose, onSave, rowData }) => {
 	);
 };
 
-export default Modal;
+export default Modal2;

@@ -34,7 +34,11 @@ const Admin = (props) => {
           "host_name": UAParser(UserAgent).browser.name + " " + UAParser(UserAgent).os.name
         }
       ).then(
-        res => console.log(res)
+        res => {
+          console.log(res.data)
+          localStorage.setItem("userNamef", res.data.name_first)
+          localStorage.setItem("userNamel", res.data.name_last)
+        }
       )
     }
 
