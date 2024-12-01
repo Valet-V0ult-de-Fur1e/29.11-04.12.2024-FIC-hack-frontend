@@ -20,15 +20,15 @@ import {
   Badge,
   Card,
   CardHeader,
-  CardFooter,
+  // CardFooter,
   DropdownMenu,
   DropdownItem,
   UncontrolledDropdown,
   DropdownToggle,
   Media,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
+  // Pagination,
+  // PaginationItem,
+  // PaginationLink,
   Progress,
   Table,
   Container,
@@ -37,6 +37,141 @@ import {
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.js";
+
+
+// // Компонент для отображения модального окна
+// const Modal = ({ isOpen, onClose, onSave, rowData }) => {
+//   const [data, setData] = useState(rowData);
+
+//   const handleChange = (e) => {
+//     const { name, value } = e.target;
+//     setData((prevData) => ({ ...prevData, [name]: value }));
+//   };
+
+//   const handleSave = () => {
+//     onSave(data);
+//     onClose();
+//   };
+
+//   return (
+//     isOpen && (
+//       <div className="modal">
+//         <div className="modal-content">
+//           <h2>Edit Row</h2>
+//           <label>
+//             Name:
+//             <input
+//               type="text"
+//               name="name"
+//               value={data.name}
+//               onChange={handleChange}
+//             />
+//           </label>
+//           <label>
+//             Age:
+//             <input
+//               type="text"
+//               name="age"
+//               value={data.age}
+//               onChange={handleChange}
+//             />
+//           </label>
+//           <button onClick={handleSave}>Save</button>
+//           <button onClick={onClose}>Close</button>
+//         </div>
+//       </div>
+//     )
+//   );
+// };
+
+// // Основной компонент таблицы
+// const Table = () => {
+//   const [rows, setRows] = useState([
+//     { id: 1, name: 'Alice', age: 25 },
+//     { id: 2, name: 'Bob', age: 30 },
+//     { id: 3, name: 'Charlie', age: 35 },
+//   ]);
+//   const [isModalOpen, setIsModalOpen] = useState(false);
+//   const [currentRow, setCurrentRow] = useState(null);
+//   const [filter, setFilter] = useState('');
+
+//   const handleDelete = (id) => {
+//     setRows(rows.filter((row) => row.id !== id));
+//   };
+
+//   const handleEdit = (row) => {
+//     setCurrentRow(row);
+//     setIsModalOpen(true);
+//   };
+
+//   const handleAddRow = () => {
+//     const newRow = {
+//       id: Date.now(),
+//       name: '',
+//       age: '',
+//     };
+//     setRows([...rows, newRow]);
+//     setCurrentRow(newRow);
+//     setIsModalOpen(true);
+//   };
+
+//   const handleSaveRow = (updatedRow) => {
+//     setRows(rows.map((row) => (row.id === updatedRow.id ? updatedRow : row)));
+//   };
+
+//   const handleFilterChange = (e) => {
+//     setFilter(e.target.value);
+//   };
+
+//   const filteredRows = rows.filter((row) =>
+//     row.name.toLowerCase().includes(filter.toLowerCase())
+//   );
+
+//   return (
+//     <div>
+//       <h1>Editable Table</h1>
+//       <div>
+//         <input
+//           type="text"
+//           placeholder="Filter by Name"
+//           value={filter}
+//           onChange={handleFilterChange}
+//         />
+//       </div>
+//       <button onClick={handleAddRow}>Add New Row</button>
+//       <table>
+//         <thead>
+//           <tr>
+//             <th>Name</th>
+//             <th>Age</th>
+//             <th>Actions</th>
+//           </tr>
+//         </thead>
+//         <tbody>
+//           {filteredRows.map((row) => (
+//             <tr key={row.id}>
+//               <td>{row.name}</td>
+//               <td>{row.age}</td>
+//               <td>
+//                 <button onClick={() => handleEdit(row)}>Edit</button>
+//                 <button onClick={() => handleDelete(row.id)}>Delete</button>
+//               </td>
+//             </tr>
+//           ))}
+//         </tbody>
+//       </table>
+
+//       {/* Модальное окно для редактирования */}
+//       <Modal
+//         isOpen={isModalOpen}
+//         onClose={() => setIsModalOpen(false)}
+//         onSave={handleSaveRow}
+//         rowData={currentRow}
+//       />
+//     </div>
+//   );
+// };
+
 
 const Tables = () => {
   return (
