@@ -1,5 +1,5 @@
-
 import React, { useState, useRef, useEffect } from 'react';
+import axios from 'axios';
 
 // reactstrap components
 import { Card, Container, Row } from "reactstrap";
@@ -7,11 +7,11 @@ import { Card, Container, Row } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.js";
 
-
 const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const messagesEndRef = useRef(null);
+  const [loading, setLoading] = useState(false); // Для отображения загрузки
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -21,13 +21,31 @@ const Chat = () => {
     scrollToBottom();
   }, [messages]);
 
-  const sendMessage = () => {
-    setMessages([...messages, { text: inputValue, fromMe: true }]);
-    setInputValue('');
+  // Функция для отправки запроса к API
+  const fetchGPTResponse = async (userMessage) => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`https://geminiapific.pythonanywhere.com/generate_content?prompt=Представь что ты экономические эксперт и тебе задали такой вопрос: ${encodeURIComponent(userMessage)}`);
+      setLoading(false);
+      return response.data.response || "Ошибка: пустой ответ от API";
+    } catch (error) {
+      setLoading(false);
+      console.error("Error fetching GPT response:", error);
+      return "Не удалось связаться с сервером. Проверьте подключение к сети или повторите попытку позже.";
+    }
   };
+  
 
-  const receiveMessage = () => {
-    setMessages([...messages, { text: 'Hello from the other side!', fromMe: false }]);
+  const sendMessage = async () => {
+    if (!inputValue.trim()) return;
+
+    const newMessages = [...messages, { text: inputValue, fromMe: true }];
+    setMessages(newMessages);
+    setInputValue('');
+
+    const gptResponse = await fetchGPTResponse(inputValue);
+
+    setMessages([...newMessages, { text: gptResponse, fromMe: false }]);
   };
 
   return (
@@ -42,24 +60,32 @@ const Chat = () => {
               margin: '5px',
               borderRadius: '5px',
               display: 'inline-block'
-              
             }}>
               {message.text}
             </div>
           </div>
         ))}
+        {loading && (
+          <div style={{ textAlign: 'left', marginBottom: '10px', fontStyle: 'italic', color: '#888' }}>
+            GPT пишет...
+          </div>
+        )}
         <div ref={messagesEndRef} />
-      </div>
-      <div style={{ marginBottom: '10px' }}>
-        <button onClick={receiveMessage} style={{ padding: '5px 10px', backgroundColor: '#6c757d', color: '#fff', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>Receive Message</button>
       </div>
       <input
         type="text"
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
+        placeholder="Введите ваше сообщение"
         style={{ width: '100%', padding: '5px', marginBottom: '10px' }}
       />
-      <button onClick={sendMessage} style={{ padding: '5px 10px', backgroundColor: '#007bff', color: '#fff', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>Send</button>
+      <button
+        onClick={sendMessage}
+        style={{ padding: '5px 10px', backgroundColor: '#007bff', color: '#fff', border: 'none', borderRadius: '5px', cursor: 'pointer' }}
+        disabled={loading} // Отключаем кнопку во время загрузки
+      >
+        Отправить
+      </button>
     </div>
   );
 };
